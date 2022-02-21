@@ -24,6 +24,14 @@ import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
 from PIL import Image
+import os.path
+
+# Import the mux controls and initialize to channel 0 (not used)
+import i2c_mux 
+i2c_mux.set_chan(i2c_mux.RIGHT_MUX,0)
+
+# Increase this by 1 for every new set of images you add
+MAX_IMAGES=1
 
 
 # Raspberry Pi pin configuration:
@@ -41,7 +49,7 @@ SPI_DEVICE = 0
 # SPI_DEVICE = 0
 
 # 128x32 display with hardware I2C:
-disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+#disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
 
 # 128x64 display with hardware I2C:
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
@@ -51,23 +59,68 @@ disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
 
 # 128x64 display with hardware SPI:
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
+# an array of arrays: [side, channel, disp, filename]
+displays = [
+            [i2c_mux.RIGHT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.RIGHT_MUX, 3, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.RIGHT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.RIGHT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.RIGHT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.RIGHT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
+            [i2c_mux.LEFT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
+            [i2c_mux.LEFT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
+            [i2c_mux.LEFT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
+            [i2c_mux.LEFT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
+            [i2c_mux.LEFT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "emoticon_"],
+           ]
 
 # Initialize library.
-disp.begin()
+#disp.begin()
 
 # Clear display.
-disp.clear()
-disp.display()
+#disp.clear()
+#disp.display()
+for side, channel, disp, file_name in displays:
+    # set the display channel
+    i2c_mux.set_chan(side,channel)
+
+    # Initialize library.
+    disp.begin()
+
+    # Clear display.
+    disp.clear()
+    disp.display()
 
 # Load image based on OLED display height.  Note that image is converted to 1 bit color.
-if disp.height == 64:
-    image = Image.open('happycat_oled_64.ppm').convert('1')
-else:
-    image = Image.open('happycat_oled_32.ppm').convert('1')
+#if disp.height == 64:
+    #image = Image.open('happycat_oled_64.ppm').convert('1')
+#else:
+    #image = Image.open('happycat_oled_32.ppm').convert('1')
 
 # Alternatively load a different format image, resize it, and convert to 1 bit color.
 #image = Image.open('happycat.png').resize((disp.width, disp.height), Image.ANTIALIAS).convert('1')
 
 # Display image.
-disp.image(image)
-disp.display()
+##disp.image(image)
+#disp.display()
+print("Press ctrl+C or ctrl+Z to exit")
+while(True):
+    # loop through MAX_IMAGES sets of images (if they exist)
+    for image_num in range(0,MAX_IMAGES):
+        for side, channel, disp, file_name in displays:
+            i2c_mux.set_chan(side,channel)
+
+            # construct the image name converting image_num and channel to strings first
+            image_file = file_name+str(image_num)+'_'+str(channel)+".ppm"
+
+            # comment out after debug
+            print("Loading image file",image_file)
+        
+            # check if the image file exists
+            if path.exists(path.join('.',image_file)):
+                # comment out after debug
+                print("Displaying image",image_file)
+                
+                image = Image.open(image_file).convert('1')
+                disp.image(image)
+                disp.display()
