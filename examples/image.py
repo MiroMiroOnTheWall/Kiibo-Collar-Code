@@ -24,7 +24,7 @@ import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
 from PIL import Image
-import os.path
+from os import path
 
 # Import the mux controls and initialize to channel 0 (not used)
 import i2c_mux 
@@ -32,7 +32,7 @@ i2c_mux.set_chan(i2c_mux.RIGHT_MUX,0)
 
 # Increase this by 1 for every new set of images you add
 MAX_IMAGES=1
-
+IMAGE_ROOT='/home/pi/Kiibo-Collar-Code/examples/'
 
 # Raspberry Pi pin configuration:
 RST = 24
@@ -61,17 +61,17 @@ SPI_DEVICE = 0
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, dc=DC, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
 # an array of arrays: [side, channel, disp, filename]
 displays = [
-            [i2c_mux.RIGHT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.RIGHT_MUX, 3, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.RIGHT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.RIGHT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.RIGHT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.RIGHT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "right_"],
-            [i2c_mux.LEFT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
-            [i2c_mux.LEFT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
-            [i2c_mux.LEFT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
-            [i2c_mux.LEFT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "left_"],
-            [i2c_mux.LEFT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), "emoticon_"],
+            [i2c_mux.RIGHT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.RIGHT_MUX, 3, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.RIGHT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.RIGHT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.RIGHT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.RIGHT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"right_"],
+            [i2c_mux.LEFT_MUX, 4, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"left_"],
+            [i2c_mux.LEFT_MUX, 5, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"left_"],
+            [i2c_mux.LEFT_MUX, 6, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"left_"],
+            [i2c_mux.LEFT_MUX, 7, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"left_"],
+            [i2c_mux.LEFT_MUX, 2, Adafruit_SSD1306.SSD1306_128_64(rst=RST), IMAGE_ROOT+"emoticon_"],
            ]
 
 # Initialize library.
